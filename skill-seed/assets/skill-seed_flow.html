@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>skill-seed フロー図</title>
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #ffffff;
+    --panel: #f5f7fa;
+    --ink: #1c2733;
+    --muted: #5a6776;
+    --line: #d5dce4;
+    --accent: #2d5f8b;
+    --code-bg: #eef2f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      color-scheme: dark;
+      --paper: #151b22;
+      --panel: #1d252e;
+      --ink: #e4e9ee;
+      --muted: #9aa7b4;
+      --line: #33404d;
+      --accent: #8cb8de;
+      --code-bg: #10161c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif;
+    line-height: 1.75;
+  }
+  main { max-width: 920px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 8px; }
+  h2 { font-size: 1.2rem; margin: 48px 0 8px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+  p { margin: 0 0 12px; max-width: 70ch; }
+  .lead { color: var(--muted); }
+  .diagram {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px;
+    overflow-x: auto;
+    text-align: center;
+  }
+  .legend { font-size: 0.9rem; color: var(--muted); margin-top: 10px; }
+  .legend span { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -1px; margin: 0 4px 0 12px; }
+  details { margin-top: 12px; }
+  summary { cursor: pointer; color: var(--accent); }
+  summary:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .source { position: relative; }
+  pre.code {
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+    overflow-x: auto;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin: 8px 0 0;
+  }
+  button.copy {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font: inherit;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  ul { padding-left: 1.4em; max-width: 70ch; }
+  .error { color: #c0392b; }
+</style>
+</head>
+<body>
+<main>
+  <h1>skill-seed フロー図</h1>
+  <p class="lead">Excelのヒアリングシートから、skill-creatorでSKILLを作るまでの流れです。各図の下にある「Mermaidのソース」は、そのままREADMEやSKILL.mdに貼り付けられます。</p>
+
+  <h2>1. 全体の流れ</h2>
+  <p>依頼の内容によって、テンプレートを渡す（A）か、記入済みシートからSKILLを作る（B）かに分かれます。</p>
+  <div class="diagram" id="d1"></div>
+  <details>
+    <summary>Mermaidのソース</summary>
+    <div class="source">
+      <button class="copy" type="button" data-target="src1">コピー</button>
+      <pre class="code" id="src1-view"></pre>
+    </div>
+  </details>
+
+  <h2>2. B. シートからSKILLを作る流れ</h2>
+  <p>止まる場面が3か所あります。不足があるとき（incomplete）、読み込めないとき（error）、そしてプロンプトの承認を待つとき（B-3）です。</p>
+  <div class="diagram" id="d2"></div>
+  <div class="legend">色分け:<span style="background:#f5c4b3"></span>止まる・確認を待つ<span style="background:#cecbf6"></span>先に進む</div>
+  <details>
+    <summary>Mermaidのソース</summary>
+    <div class="source">
+      <button class="copy" type="button" data-target="src2">コピー</button>
+      <pre class="code" id="src2-view"></pre>
+    </div>
+  </details>
+
+  <h2>補足</h2>
+  <ul>
+    <li>incompleteで止まった場合は、記入者が不足を直してExcelを渡し直すと、もう一度B-1から始まります。</li>
+    <li>E-06（理想の出力例）が添付されていれば、E-02（出力の構成）は空欄でもB-1を通過できます。</li>
+    <li>推奨項目の空欄やテンプレートの版違いは止まる理由にはならず、B-3の確認画面でまとめて提示します。</li>
+    <li>B-4でskill-creatorから質問が出たときは、シートに答えがあればそれを使い、なければユーザーに聞きます。</li>
+  </ul>
+</main>
+
+<script type="text/plain" id="src1">flowchart TD
+    start["依頼・ファイルを受け取る"] --> q{"どちらの依頼？"}
+    q -->|テンプレートが欲しい| A1["A. 空のテンプレートを<br/>出力先にコピーして渡す"]
+    q -->|記入済みExcelが届いた| B["B. シートからSKILLを作る<br/>（次の図）"]
+    q -->|判断できない| ask["利用者に聞く"]
+    ask --> q
+    A1 --> A2["書き方を短く伝える<br/>黄色セル・★必須・添付ファイル"]</script>
+
+<script type="text/plain" id="src2">flowchart TD
+    B1["B-1 read_sheet.py で読み込み<br/>必須項目と添付ファイルをチェック"] --> st{"status"}
+    st -->|error| err["エラー内容を伝え<br/>最新テンプレートでの書き直しを案内して停止"]
+    st -->|incomplete| inc["不足一覧を返して停止<br/>（記入者に転送できる文面）"]
+    inc -.->|記入者が直して再提出| B1
+    st -->|ok| B2["B-2 作業ディレクトリを作成<br/>添付を attachments/ にコピー<br/>skill-creator_prompt.md を作成"]
+    B2 --> B3{"B-3 ユーザーに確認<br/>プロンプトと警告を提示"}
+    B3 -->|修正あり| B2
+    B3 -->|承認| env{"skill-creatorを<br/>使える環境か"}
+    env -->|いいえ| guide["skill-creator_prompt.md を渡し<br/>使える環境での実行を案内"]
+    env -->|はい| B4["B-4 skill-creatorでSKILLを生成<br/>下書き・テスト・改善"]
+    B4 --> out["SKILLと<br/>skill-creator_prompt.md を出力"]</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<script>
+  (function () {
+    var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+    // 表示用の色分け。コピー用のソースには含めない（READMEなど貼り付け先の配色に任せるため）
+    var styles = {
+      src1: dark
+        ? "\n    classDef go fill:#3c3489,stroke:#afa9ec,color:#eeedfe\n    class A1,A2,B go"
+        : "\n    classDef go fill:#eeedfe,stroke:#534ab7,color:#26215c\n    class A1,A2,B go",
+      src2: dark
+        ? "\n    classDef stop fill:#712b13,stroke:#f0997b,color:#faece7\n    classDef go fill:#3c3489,stroke:#afa9ec,color:#eeedfe\n    class err,inc,B3 stop\n    class B1,B2,B4,out go"
+        : "\n    classDef stop fill:#faece7,stroke:#993c1d,color:#4a1b0c\n    classDef go fill:#eeedfe,stroke:#534ab7,color:#26215c\n    class err,inc,B3 stop\n    class B1,B2,B4,out go"
+    };
+
+    function source(id) {
+      return document.getElementById(id).textContent.trim();
+    }
+
+    ["src1", "src2"].forEach(function (id) {
+      document.getElementById(id + "-view").textContent = "```mermaid\n" + source(id) + "\n```";
+    });
+
+    document.querySelectorAll("button.copy").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var text = "```mermaid\n" + source(btn.dataset.target) + "\n```";
+        var done = function () {
+          btn.textContent = "コピーしました";
+          setTimeout(function () { btn.textContent = "コピー"; }, 1500);
+        };
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text); done(); });
+        } else {
+          fallbackCopy(text);
+          done();
+        }
+      });
+    });
+
+    function fallbackCopy(text) {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "absolute";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    if (typeof mermaid === "undefined") {
+      ["d1", "d2"].forEach(function (id) {
+        document.getElementById(id).innerHTML =
+          '<p class="error">図を表示できませんでした（インターネットに接続されていない可能性があります）。下の「Mermaidのソース」は利用できます。</p>';
+      });
+      return;
+    }
+
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: dark ? "dark" : "default",
+      securityLevel: "strict",
+      flowchart: { htmlLabels: true, curve: "basis" },
+      fontFamily: '"Hiragino Sans", "Yu Gothic UI", "Meiryo", sans-serif'
+    });
+
+    [["d1", "src1"], ["d2", "src2"]].forEach(function (pair, i) {
+      mermaid.render("flow" + i, source(pair[1]) + styles[pair[1]]).then(function (res) {
+        document.getElementById(pair[0]).innerHTML = res.svg;
+      }).catch(function (err) {
+        document.getElementById(pair[0]).innerHTML = '<p class="error">図の描画に失敗しました: ' +
+          String(err && err.message || err).replace(/</g, "&lt;") + "</p>";
+      });
+    });
+  })();
+</script>
+</body>
+</html>

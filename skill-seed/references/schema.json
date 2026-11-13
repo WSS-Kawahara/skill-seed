@@ -1,0 +1,153 @@
+{
+  "template_version": "1.1",
+  "required_labels": {
+    "required": "★必須",
+    "recommended": "推奨",
+    "optional": "任意"
+  },
+  "sheets": [
+    {
+      "name": "A_基本情報",
+      "title": "A. 基本情報 ― どんなSKILLを作りたいか",
+      "items": [
+        {"kind": "q", "id": "A-01", "q": "このSKILLの呼び名（日本語）", "req": "required", "hint": "社内で呼ぶときの名前で構いません。", "example": "議事録まとめ"},
+        {"kind": "q", "id": "A-02", "q": "英語名（分からなければ空欄でOK）", "req": "optional", "hint": "半角英小文字とハイフンのみ。空欄ならClaudeが提案します。", "example": "meeting-minutes"},
+        {"kind": "q", "id": "A-03", "q": "このSKILLで何ができるようになってほしいですか？（1〜2文）", "req": "required", "hint": "「〇〇から△△を作る」のように、入力と出来上がりが分かるように書いてください。", "example": "会議の文字起こしテキストから、決定事項とToDoを抜き出した議事録を作る"},
+        {"kind": "q", "id": "A-04", "q": "なぜ必要ですか？今どんなことに困っていますか？", "req": "required", "hint": "時間がかかる、品質がバラバラ、など現状の困りごとを書いてください。", "example": "毎回30分かかるうえ、人によって書き方がバラバラで読みにくい"},
+        {"kind": "q", "id": "A-05", "q": "主に使う人は誰ですか？", "req": "required", "choices": ["自分のみ", "チーム", "部署全体", "全社", "その他"], "hint": "「その他」の場合は直接入力してください。", "example": "チーム"},
+        {"kind": "q", "id": "A-06", "q": "使う人のITへの慣れはどの程度ですか？", "req": "optional", "choices": ["慣れている", "普通", "苦手な人もいる"], "hint": "SKILLの説明の丁寧さを決めるのに使います。", "example": "苦手な人もいる"},
+        {"kind": "q", "id": "A-07", "q": "どこで使いますか？", "req": "required", "choices": ["Claude.ai・アプリ", "Claude Code", "両方", "分からない"], "hint": "ブラウザやアプリでチャットするなら「Claude.ai・アプリ」です。", "example": "Claude.ai・アプリ"},
+        {"kind": "q", "id": "A-08", "q": "どのくらいの頻度で使いますか？", "req": "optional", "choices": ["毎日", "週に数回", "月に数回", "不定期"], "hint": "", "example": "週に数回"},
+        {"kind": "q", "id": "A-09", "q": "記入者のお名前", "req": "optional", "hint": "内容について確認したいときの連絡先として使います。", "example": "山田 花子"},
+        {"kind": "q", "id": "A-10", "q": "記入日", "req": "optional", "hint": "例: 2026/11/10", "example": "2026/11/10"}
+      ]
+    },
+    {
+      "name": "B_使う場面",
+      "title": "B. 使う場面 ― どう頼まれたら、このSKILLを使うか",
+      "items": [
+        {"kind": "table", "id": "B-01", "title": "Claudeにどう頼んだときに、このSKILLを使ってほしいですか？（依頼文の例）", "req": "required", "min_rows": 3, "hint": "実際に話しかける言葉そのままで、1行に1つ書いてください。言い方を変えたものが3つ以上あると精度が上がります。3つ思いつかないときは「○○（このSKILLの呼び名）を使って〜」のように、呼び名を入れた頼み方も1行として書いて構いません。", "rows": 10,
+          "columns": [
+            {"key": "request", "name": "依頼文の例", "req": true, "width": 70}
+          ],
+          "example": {"request": "この文字起こしから議事録を作って"}},
+        {"kind": "q", "id": "B-02", "q": "依頼文によく出てきそうなキーワード", "req": "optional", "hint": "読点（、）区切りで書いてください。", "example": "議事録、会議メモ、MTGまとめ、文字起こし"},
+        {"kind": "table", "id": "B-03", "title": "似ているけれど、このSKILLを使ってほしくない場面", "req": "recommended", "min_rows": 1, "hint": "上の依頼文と似ていて、Claudeが取り違えそうな頼み方を書いてください。誤って使われると困る場面を書くと、使い分けが正確になります。", "rows": 5,
+          "columns": [
+            {"key": "situation", "name": "使ってほしくない場面・依頼文", "req": true, "width": 50},
+            {"key": "reason", "name": "理由（あれば）", "req": false, "width": 40}
+          ],
+          "example": {"situation": "会議の日程調整をしてほしい", "reason": "議事録作成とは別の作業のため"}},
+        {"kind": "q", "id": "B-04", "q": "一緒に使う、または役割が重なりそうな既存のSKILL", "req": "optional", "hint": "分からなければ空欄で構いません。", "example": "なし"}
+      ]
+    },
+    {
+      "name": "C_入力",
+      "title": "C. 入力 ― Claudeに何を渡すか",
+      "items": [
+        {"kind": "table", "id": "C-01", "title": "SKILLを使うときに渡すもの（1行に1つ）", "req": "required", "min_rows": 1, "hint": "サンプルを添付する場合は、そのファイル名を書き、記入済みExcelと一緒に渡してください。", "rows": 8,
+          "columns": [
+            {"key": "name", "name": "入力の名前", "req": true, "width": 22},
+            {"key": "type", "name": "種類", "req": true, "width": 16, "choices": ["チャットの文章", "ファイル", "URL", "その他"]},
+            {"key": "format", "name": "ファイル形式", "req": false, "width": 14, "choices": ["Word", "Excel", "PowerPoint", "PDF", "CSV", "画像", "テキスト", "その他"]},
+            {"key": "frequency", "name": "毎回あるか", "req": true, "width": 12, "choices": ["毎回", "ときどき"]},
+            {"key": "description", "name": "中身の説明", "req": true, "width": 40},
+            {"key": "sample", "name": "サンプル", "req": false, "width": 12, "choices": ["添付する", "後で用意", "なし"]},
+            {"key": "sample_file", "name": "添付ファイル名", "req": false, "width": 26, "file_ref": true}
+          ],
+          "example": {"name": "会議の文字起こし", "type": "ファイル", "format": "テキスト", "frequency": "毎回", "description": "Teamsの自動文字起こし。話者名と時刻が付いている", "sample": "添付する", "sample_file": "sample_transcript.txt"}}
+      ]
+    },
+    {
+      "name": "D_作業手順",
+      "title": "D. 作業手順 ― 人がやるなら、どんな順番で何をするか",
+      "items": [
+        {"kind": "q", "id": "D-01", "q": "手順の順番はどこまで守る必要がありますか？", "req": "required", "choices": ["必ずこの順番", "ある程度自由", "おまかせ"], "hint": "", "example": "ある程度自由"},
+        {"kind": "table", "id": "D-02", "title": "作業の手順（1行に1ステップ）", "req": "required", "min_rows": 2, "hint": "普段あなたが手作業でやっている順番で、作業をできるだけ小さく分けて1行に1つ書いてください。迷うポイントやコツを「判断のポイント」に書くと精度が上がります。", "rows": 15,
+          "columns": [
+            {"key": "action", "name": "やること", "req": true, "width": 36},
+            {"key": "judgement", "name": "判断のポイント・注意点", "req": false, "width": 40},
+            {"key": "tools", "name": "使う道具・情報", "req": false, "width": 22},
+            {"key": "human_check", "name": "人の確認が必要？", "req": false, "width": 14, "choices": ["はい", "いいえ"]}
+          ],
+          "example": {"action": "文字起こしから決定事項を抜き出す", "judgement": "「〜で決定」「〜でいきましょう」などの発言を拾う。保留は決定に含めない", "tools": "なし", "human_check": "いいえ"}}
+      ]
+    },
+    {
+      "name": "E_出力",
+      "title": "E. 出力 ― 何ができあがれば完成か",
+      "items": [
+        {"kind": "q", "id": "E-01", "q": "出力の形式", "req": "required", "choices": ["チャットの文章", "Word", "Excel", "PowerPoint", "PDF", "Markdown", "その他"], "hint": "「その他」の場合は直接入力してください。", "example": "Word"},
+        {"kind": "q", "id": "E-02", "q": "出力の構成（見出しや項目の並び）", "req": "conditional", "condition": {"id": "E-06", "empty": true}, "hint": "セル内で改行（Alt+Enter）して、上から順に書いてください。E-06に理想の出力例を書いて添付する場合は、空欄でも構いません。", "example": "1. 会議名・日時・参加者\n2. 決定事項\n3. ToDo（担当者・期限）\n4. 次回予定"},
+        {"kind": "q", "id": "E-03", "q": "文体", "req": "optional", "choices": ["です・ます", "である", "箇条書き中心", "その他"], "hint": "", "example": "箇条書き中心"},
+        {"kind": "q", "id": "E-04", "q": "分量の目安", "req": "optional", "hint": "ページ数、文字数など。", "example": "A4で1枚以内"},
+        {"kind": "q", "id": "E-05", "q": "ファイル名のルール", "req": "optional", "hint": "ファイルで出力する場合のみ。", "example": "議事録_YYYYMMDD_会議名.docx"},
+        {"kind": "q", "id": "E-06", "q": "理想の出力例（添付するファイル名）", "req": "recommended", "hint": "過去にうまく作れた例があれば、そのファイル名を書いて一緒に渡してください。", "example": "good_example_minutes.docx", "file_ref": true},
+        {"kind": "q", "id": "E-07", "q": "何ができていれば「合格」ですか？", "req": "required", "hint": "出来上がりをチェックするときに見るポイントを書いてください。", "example": "決定事項の漏れがない／ToDoに必ず担当者と期限がある／A4で1枚に収まっている"}
+      ]
+    },
+    {
+      "name": "F_ルール",
+      "title": "F. ルール ― 必ず守ること・やってはいけないこと",
+      "items": [
+        {"kind": "table", "id": "F-01", "title": "ルール（1行に1つ）", "req": "recommended", "min_rows": 1, "hint": "理由も書くと、Claudeが想定外の場面でも正しく判断しやすくなります。ファイルの削除や外部への送信など、Claudeにさせたくない操作があれば「絶対にやらない」として書いてください。", "rows": 10,
+          "columns": [
+            {"key": "type", "name": "種類", "req": true, "width": 16, "choices": ["必ず守る", "絶対にやらない", "できればやる"]},
+            {"key": "rule", "name": "内容", "req": true, "width": 50},
+            {"key": "reason", "name": "理由", "req": false, "width": 36}
+          ],
+          "example": {"type": "絶対にやらない", "rule": "発言者が言っていない内容を書き足す", "reason": "議事録は正式な記録として残るため"}},
+        {"kind": "table", "id": "F-02", "title": "社内用語・略語の説明", "req": "optional", "min_rows": 0, "hint": "Claudeが知らない社内用語があれば書いてください。", "rows": 10,
+          "columns": [
+            {"key": "term", "name": "用語", "req": true, "width": 20},
+            {"key": "meaning", "name": "意味", "req": true, "width": 60}
+          ],
+          "example": {"term": "定例", "meaning": "毎週月曜10時のチーム定例会議"}}
+      ]
+    },
+    {
+      "name": "G_例外",
+      "title": "G. 例外 ― 困ったときにどうしてほしいか",
+      "items": [
+        {"kind": "q", "id": "G-01", "q": "Claudeが判断に迷ったとき、基本的にどうしてほしいですか？", "req": "required", "choices": ["必ず質問する", "推測で進めてその旨を書く", "作業を止める"], "hint": "", "example": "必ず質問する"},
+        {"kind": "table", "id": "G-02", "title": "こんなときは、こうしてほしい（1行に1つ）", "req": "recommended", "min_rows": 1, "hint": "入力が足りない、想定外の形式だった、などの場面を書いてください。", "rows": 10,
+          "columns": [
+            {"key": "situation", "name": "こんなとき", "req": true, "width": 40},
+            {"key": "action", "name": "こうしてほしい", "req": true, "width": 50}
+          ],
+          "example": {"situation": "話者名が書かれていない", "action": "担当者欄を「（要確認）」として作り、最後に確認事項として伝える"}}
+      ]
+    },
+    {
+      "name": "H_テスト",
+      "title": "H. テスト ― 出来上がったSKILLの品質をどう確かめるか",
+      "items": [
+        {"kind": "q", "id": "H-01", "q": "テストで品質を確かめたいですか？", "req": "required", "choices": ["はい", "いいえ", "おまかせ"], "hint": "「はい」の場合は下の表に2件以上書いてください。", "example": "はい"},
+        {"kind": "table", "id": "H-02", "title": "テストケース（1行に1件）", "req": "conditional", "condition": {"id": "H-01", "equals": "はい"}, "min_rows": 2, "hint": "実際にありそうな依頼と、そのとき期待する結果を書いてください。", "rows": 8,
+          "columns": [
+            {"key": "request", "name": "依頼文", "req": true, "width": 34},
+            {"key": "files", "name": "添付ファイル名", "req": false, "width": 22, "file_ref": true},
+            {"key": "expected", "name": "期待する結果", "req": true, "width": 36},
+            {"key": "checkpoints", "name": "確認ポイント", "req": false, "width": 30}
+          ],
+          "example": {"request": "この文字起こしで議事録作って", "files": "sample_transcript.txt", "expected": "決定事項3件・ToDo5件を含むWordの議事録", "checkpoints": "ToDoすべてに担当者と期限がある"}}
+      ]
+    },
+    {
+      "name": "I_参考資料",
+      "title": "I. 参考資料・外部サービス・機密情報",
+      "items": [
+        {"kind": "table", "id": "I-01", "title": "参考資料（1行に1つ）", "req": "optional", "min_rows": 0, "hint": "社内マニュアル、ひな形などがあれば。添付する場合はファイル名を書いてください。", "rows": 8,
+          "columns": [
+            {"key": "name", "name": "資料名", "req": true, "width": 26},
+            {"key": "location", "name": "添付ファイル名 または 保存場所", "req": true, "width": 34, "file_ref": true},
+            {"key": "usage", "name": "使い方", "req": true, "width": 22, "choices": ["読んで参考にする", "ひな形として使う", "SKILLに同梱する"]}
+          ],
+          "example": {"name": "議事録テンプレート", "location": "minutes_template.docx", "usage": "ひな形として使う"}},
+        {"kind": "q", "id": "I-02", "q": "使う外部サービス（Slack、Google Drive、Notion、社内システムなど）", "req": "optional", "hint": "なければ「なし」と書いてください。", "example": "なし"},
+        {"kind": "q", "id": "I-03", "q": "個人情報や社外秘の情報を扱いますか？", "req": "required", "choices": ["はい", "いいえ", "分からない"], "hint": "", "example": "はい"},
+        {"kind": "q", "id": "I-04", "q": "（I-03が「はい」の場合）どんな情報で、どう扱うべきですか？", "req": "conditional", "condition": {"id": "I-03", "equals": "はい"}, "hint": "例: 社外への送信禁止、出力にフルネームを載せない、など。", "example": "参加者の氏名。社外に共有する版では役職名に置き換える"}
+      ]
+    }
+  ]
+}
